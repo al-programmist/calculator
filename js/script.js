@@ -37,7 +37,14 @@
    }
  }
 
+  function clear() {
+    output.value = '0';
+    buffer = 0;
+    comparator = [];
+  }
+
   function setControlValue(symbol) {
+
     var currentSymbol = String(symbol).trim().toLowerCase();
     var virtualControlSelector = document.querySelector('[data-action="' + currentSymbol + '"]');
 
@@ -49,15 +56,10 @@
       }, 300);
     }
 
-    if (currentSymbol === 'delete') {
-      output.value = '0';
-      buffer = 0;
-    }
+    if (currentSymbol === 'delete') clear();
+    if (currentSymbol === 'backspace') toggleCalculator();
+    if (currentSymbol === '+') makeSum();
 
-    if (currentSymbol === 'backspace') {
-      output.value = '0';
-      buffer = 0;
-    }
 
   }
 
@@ -65,14 +67,14 @@
    // Разрешаем: backspace, delete, tab и escape
    if ( event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 ||
            // Разрешаем: Ctrl+A
-           (event.keyCode == 65 && event.ctrlKey === true) ||
+           (event.keyCode === 65 && event.ctrlKey === true) ||
            // Разрешаем: home, end, влево, вправо
            (event.keyCode >= 35 && event.keyCode <= 39) ||
            // Разрешаем десятичную точку
-           (event.keyCode === 110)) {
+           (event.keyCode === 110 || event.keyCode === 107)) {
      if(event.keyCode === 110) setKeyboardValue(event.key);
-     if(event.keyCode === 46 || event.keyCode === 8) setControlValue(event.key);
-     return;
+     if(event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 107) setControlValue(event.key);
+     return false;
    } else {
      setKeyboardValue(event.key);
      // Запрещаем все, кроме цифр на основной клавиатуре, а так же Num-клавиатуре
@@ -102,8 +104,7 @@
 
  function resetHandler(event) {
    event.preventDefault();
-   output.value = '0';
-   buffer = 0;
+   clear();
  }
 
 
@@ -117,10 +118,8 @@
    }
  }
 
- function disableCalculator() {
-   output.value = '0';
-   buffer = 0;
-   comparator = [];
+ function toggleCalculator() {
+   clear();
    output.toggleAttribute('disabled');
    reset.toggleAttribute('disabled');
    plus.toggleAttribute('disabled');
@@ -137,25 +136,45 @@
 
  function triggerOnOff(event) {
    event.preventDefault();
-   disableCalculator();
+   toggleCalculator();
  }
 
- function setComparator() {
+ function setComparator(action) {
    var currentValue = Number(buffer);
-   // output.value = '0';
-   comparator.push(currentValue);
+   if(action === 'plus') comparator.push(currentValue);
+   if(action === 'minus') {
+     if (!comparator.length) {
+       comparator.push(currentValue)
+     } else comparator.push((-1) * currentValue);
+   }
+   
    buffer = 0;
  }
 
- function makeSum() {
-   var result = 0;
-   setComparator();
-   comparator.forEach(function (value){
-     result += value;
-   });
+  function makeSum() {
+    var result = 0;
+    setComparator('plus');
+    comparator.forEach(function (value){
+      result += value;
+    });
 
-  return result;
- };
+    return result;
+  }
+
+  function makeDiff() {
+    var result = 0;
+    setComparator('minus');
+    comparator.forEach(function (value){
+      result += value;
+    });
+
+    return result;
+  }
+
+  function minusHandler(event) {
+    event.preventDefault();
+    output.value = makeDiff();
+  }
 
  function plusHandler(event) {
    event.preventDefault();
@@ -180,7 +199,7 @@
    widget.addEventListener('reset', resetHandler);
    off.addEventListener('click', triggerOnOff);
    plus.addEventListener('click', plusHandler);
-   // minus.addEventListener('click', minusHandler);
+   minus.addEventListener('click', minusHandler);
    // divide.addEventListener('click', divideHandler);
    // multiply.addEventListener('click', multiplyHandler);
    // sqrt.addEventListener('click', sqrtHandler);
