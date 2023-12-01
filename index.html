@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Тестовое задание: калькулятор. Выполнил Александр Гузяев">
+    <meta name="keywords"
+          content="W-Wave, Radio, радиостанция, подкасты, новости, наука, культура, музыка, реклама, плейлиты, блоги, топы, передачи, сетка вещания, гости">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="./fonts/MullerRegular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="./fonts/MullerRegular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Тестовое задание: цифровой калькулятор</title>
+  </head>
+  <body class="page index">
+    <div class="page__inner">
+      <header class="header" id="header" aria-label="Шапка сайта">
+        <div class="header__container container">
+          <a class="logo header__logo" href="/" aria-label="Логотип калькулятора">
+            <img src="./images/logo.svg" alt="Калькулятор">
+          </a>
+          <h1 class="page__title">Цифровой калькулятор</h1>
+        </div>
+      </header>
+
+      <main class="main" id="main">
+        <section class="section calculator" aria-label="Калькулятор">
+          <div class="container calculator__inner">
+            <form class="calculator__item widget js-widget">
+              <div class="widget__inner">
+                <div class="widget__screen"></div>
+                <div class="widget__controls controls">
+                  <label class="controls__screen screen">
+                    <input class="screen__input js-screen-input" type="text" name="screen" value="0">
+                  </label>
+                  <div class="controls__panel panel">
+                    <button class="widget__control-button widget__control-button--half js-widget-off" type="button">ON/OFF</button>
+                    <button class="widget__control-button widget__control-button--half js-widget-reset" type="reset">Clear</button>
+                    <button class="widget__control-button js-widget-plus" type="button" data-action="increase">+</button>
+                    <button class="widget__control-button js-widget-minus" type="button" data-action="decrease">-</button>
+                    <button class="widget__control-button js-widget-multiply" type="button" data-action="multiply">x</button>
+                    <button class="widget__control-button js-widget-divide" type="button" data-action="divide">%</button>
+                    <button class="widget__control-button js-widget-sqrt" type="button" data-action="sqrt">SQRT</button>
+                    <button class="widget__control-button js-widget-equal" type="button" data-action="equal">=</button>
+                  </div>
+                  <div class="controls__keyboard keyboard">
+                    <button class="widget__button js-widget-number" type="button" data-number="1">1</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="2">2</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="3">3</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="4">4</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="5">5</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="6">6</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="7">7</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="8">8</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="9">9</button>
+                    <button class="widget__button js-widget-number" type="button" data-number="0">0</button>
+                    <button class="widget__button js-widget-number" type="button" data-number=".">.</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="footer" aria-label="Подвал сайта">
+        <div class="container">
+          <p class="footer__copyright">Александр Гузяев &copy; 2023</p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="./js/script.js"></script>
+  </body>
+</html>

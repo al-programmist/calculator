@@ -1,0 +1,186 @@
+.logo {
+  margin-right: 15px;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+}
+
+.logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.footer,
+.header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: var(--white);
+  background-color: var(--teal);
+}
+
+.footer {
+  text-align: center;
+}
+
+.footer p {
+  font-size: calc(16px + 4 * (100vw - 320px) / 960);
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.widget {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 480px;
+  border: 3px solid var(--teal);
+}
+
+.widget__control-button,
+.widget__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  border: 2px solid var(--teal);
+
+  color: var(--gray-700);
+  line-height: 0;
+
+  transition-property: color, background-color, box-shadow, border-color;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+}
+
+.widget__control-button {
+  min-width: 60px;
+  min-height: 30px;
+  width: calc(33% - 6px);
+
+  border-radius: 20px;
+
+  font-size: 14px;
+}
+
+.widget__button {
+  width: calc(33% - 6px);
+  min-width: 60px;
+  min-height: 30px;
+  aspect-ratio: 1;
+  border-radius: 5px;
+
+  font-size: 33px;
+}
+
+.widget__control-button:focus-visible,
+.widget__button:focus-visible {
+  box-shadow: 0 0 0 3px var(--success);
+}
+
+button.on-keyboard--selected,
+.widget__control-button:active,
+.widget__button:active {
+  color: var(--white);
+  background-color:  var(--success);
+  border-color:  var(--success);
+}
+
+.controls__panel {
+  padding-top: 20px;
+  padding-bottom: 10px;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+
+}
+
+.controls__keyboard {
+  padding-top: 20px;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.widget__control-button--half {
+  flex-basis: calc(50% - 5px);
+}
+
+.screen {
+  display: block;
+}
+
+.screen__input {
+  padding-left: 15px;
+  padding-right: 15px;
+
+  display: block;
+  width: 100%;
+  height: 50px;
+  border: 2px solid var(--gray-300);
+  background-color: var(--gray-300);
+
+  font-size: 25px;
+  color: var(--gray-700);
+  caret-color: var(--transparent);
+}
+
+.screen__input:disabled {
+  color: var(--gray-500);
+  pointer-events: none;
+}
+
+@media all and (min-width: 600px){
+  .screen__input {
+    height: 80px;
+    font-size: 30px;
+  }
+
+  .widget__control-button {
+    min-width: 60px;
+    min-height: 40px;
+    width: calc(33% - 6px);
+    font-size: 16px;
+  }
+}
+
+@media all and (min-width: 768px){
+  .footer,
+  .header {
+    padding-top: 25px;
+    padding-bottom: 25px;
+  }
+
+}
+
+@media all and (min-width: 1280px){
+  .widget__control-button:hover,
+  .widget__button:hover {
+    color: var(--white);
+    background-color:  var(--success);
+    border-color: var(--success);
+  }
+
+  .widget__control-button,
+  .widget__button {
+    border: 4px solid var(--teal);
+  }
+
+  .widget {
+    border: 7px solid var(--teal);
+  }
+
+}
