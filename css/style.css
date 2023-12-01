@@ -93,6 +93,14 @@ button.on-keyboard--selected,
   border-color:  var(--success);
 }
 
+.widget__control-button:disabled,
+.widget__button:disabled {
+  pointer-events: none;
+  border-color:  var(--gray-400);
+  color:  var(--gray-400);
+  cursor: not-allowed;
+}
+
 .controls__panel {
   padding-top: 20px;
   padding-bottom: 10px;
