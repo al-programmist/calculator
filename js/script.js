@@ -148,6 +148,10 @@
         if (currentValue === 0) result = 'error';
       }
 
+      if (comparator.action === 'sqrt') {
+        result = comparator.result;
+      }
+
       comparator.result = (result !== 'error') ? Number(result) : 'error';
       comparator.complete = true;
       comparator.numbers = [];
@@ -248,6 +252,14 @@
     return result;
   }
 
+  function setError(_result) {
+    if (_result === 'error') {
+      clear();
+      comparator.result = 'error';
+      return 'error';
+    }
+  }
+
   function doActionDivide() {
     setComparator('divide');
     var result = Number(comparator.numbers[0]);
@@ -260,13 +272,25 @@
       if (result === 'error') break;
     }
 
-    if (result === 'error') {
-      clear();
-      comparator.result = 'error';
-      return 'error';
-    }
+    setError(result);
 
     comparator.result = result;
+    return result;
+  }
+
+  function doActionSqrt() {
+    setComparator('sqrt');
+    var result = Number(comparator.numbers[0]);
+    var value = 0;
+
+    for (var i = 0; i < comparator.numbers.length; i++) {
+      value = comparator.numbers[i];
+      result = (value >= 0) ? Math.sqrt(value) : 'error';
+    }
+
+    setError(result);
+    comparator.result = result;
+
     return result;
   }
 
@@ -291,6 +315,11 @@
     output.value = doActionDivide();
   }
 
+  function sqrtHandler(event) {
+    event.preventDefault();
+    output.value = doActionSqrt();
+  }
+
   function init() {
     if (!widget) return false;
 
@@ -313,7 +342,7 @@
     equal.addEventListener('click', equalHandler);
     multiply.addEventListener('click', multiplyHandler);
     divide.addEventListener('click', divideHandler);
-    // sqrt.addEventListener('click', sqrtHandler);
+    sqrt.addEventListener('click', sqrtHandler);
 
     keyboard.forEach(function (value) {
       value.addEventListener('click', clickKeyboardNumberHandler);
