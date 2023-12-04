@@ -62,6 +62,7 @@
     if (currentSymbol === 'backspace') toggleCalculator();
     if (currentSymbol === '+') doActionSum();
     if (currentSymbol === '-') doActionDiff();
+    if (currentSymbol === '*') doActionMultiply();
     if (currentSymbol === 'enter') {
       virtualControlSelector = document.querySelector('[data-action="equal"]');
       doActionEqual();
@@ -79,6 +80,7 @@
   }
 
  function setKeyboardRoutes(event) {
+   console.log(event.keyCode);
    // Разрешаем: backspace, delete, tab и escape
    if ( event.keyCode === 13 ||event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 ||
            // Разрешаем: Ctrl+A
@@ -86,9 +88,9 @@
            // Разрешаем: home, end, влево, вправо
            (event.keyCode >= 35 && event.keyCode <= 39) ||
            // Разрешаем десятичную точку
-           (event.keyCode === 109 ||event.keyCode === 110 || event.keyCode === 107)) {
+           (event.keyCode === 109 ||event.keyCode === 110 || event.keyCode === 107|| event.keyCode === 106)) {
      if(event.keyCode === 110) setKeyboardValue(event.key);
-     if(event.keyCode === 13 ||event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 107|| event.keyCode === 109) setControlValue(event.key);
+     if(event.keyCode === 13 ||event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 107|| event.keyCode === 109|| event.keyCode === 106) setControlValue(event.key);
      return false;
    } else {
      setKeyboardValue(event.key);
@@ -138,10 +140,13 @@
        result = Number(comparator.result) - currentValue;
      }
 
+     if (comparator.action === 'multiply') {
+       result = Number(comparator.result) * currentValue;
+     }
+
      comparator.result = Number(result);
      comparator.complete = true;
      comparator.numbers = [];
-     console.log(comparator);
      output.value = result;
    }
 
@@ -217,6 +222,17 @@
      return result;
   }
 
+  function doActionMultiply() {
+    var result = 1;
+    setComparator('multiply');
+
+    comparator.numbers.forEach(function (value){
+      result *= value;
+    });
+    comparator.result = result;
+    return result;
+  }
+
   function doActionDiff() {
     setComparator('minus');
     var result = Number(comparator.numbers[0]);
@@ -225,9 +241,9 @@
     }
 
     comparator.result = result;
-
     return result;
   }
+
 
   function minusHandler(event) {
     event.preventDefault();
@@ -237,6 +253,11 @@
  function plusHandler(event) {
    event.preventDefault();
    output.value = doActionSum();
+ }
+
+ function multiplyHandler(event) {
+   event.preventDefault();
+   output.value = doActionMultiply();
  }
 
  function init() {
@@ -259,8 +280,8 @@
    plus.addEventListener('click', plusHandler);
    minus.addEventListener('click', minusHandler);
    equal.addEventListener('click', equalHandler);
+   multiply.addEventListener('click', multiplyHandler);
    // divide.addEventListener('click', divideHandler);
-   // multiply.addEventListener('click', multiplyHandler);
    // sqrt.addEventListener('click', sqrtHandler);
 
    keyboard.forEach(function (value){
