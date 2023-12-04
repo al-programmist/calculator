@@ -13,7 +13,12 @@
  var sqrt = null;
  var equal = null;
  var buffer = 0;
- var comparator = [];
+ var comparator = {
+   numbers: [],
+   action: '',
+   result: 0,
+   complete: false
+ };
 
  function selectFromVirtualKeyboard(value) {
    if (Number(value) >= 0 || value === '.') {
@@ -40,13 +45,27 @@
   function clear() {
     output.value = '0';
     buffer = 0;
-    comparator = [];
+    comparator = {
+      numbers: [],
+      action: '',
+      result: 0,
+      complete: false
+    };
   }
 
   function setControlValue(symbol) {
 
     var currentSymbol = String(symbol).trim().toLowerCase();
     var virtualControlSelector = document.querySelector('[data-action="' + currentSymbol + '"]');
+
+    if (currentSymbol === 'delete') clear();
+    if (currentSymbol === 'backspace') toggleCalculator();
+    if (currentSymbol === '+') doActionSum();
+    if (currentSymbol === '-') doActionDiff();
+    if (currentSymbol === 'enter') {
+      virtualControlSelector = document.querySelector('[data-action="equal"]');
+      doActionEqual();
+    }
 
     if (virtualControlSelector) {
       virtualControlSelector.classList.add('on-keyboard--selected');
@@ -56,24 +75,20 @@
       }, 300);
     }
 
-    if (currentSymbol === 'delete') clear();
-    if (currentSymbol === 'backspace') toggleCalculator();
-    if (currentSymbol === '+') makeSum();
-
 
   }
 
- function setKeyboardOutput(event) {
+ function setKeyboardRoutes(event) {
    // Разрешаем: backspace, delete, tab и escape
-   if ( event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 ||
+   if ( event.keyCode === 13 ||event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 ||
            // Разрешаем: Ctrl+A
            (event.keyCode === 65 && event.ctrlKey === true) ||
            // Разрешаем: home, end, влево, вправо
            (event.keyCode >= 35 && event.keyCode <= 39) ||
            // Разрешаем десятичную точку
-           (event.keyCode === 110 || event.keyCode === 107)) {
+           (event.keyCode === 109 ||event.keyCode === 110 || event.keyCode === 107)) {
      if(event.keyCode === 110) setKeyboardValue(event.key);
-     if(event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 107) setControlValue(event.key);
+     if(event.keyCode === 13 ||event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 107|| event.keyCode === 109) setControlValue(event.key);
      return false;
    } else {
      setKeyboardValue(event.key);
@@ -85,26 +100,62 @@
  }
 
  function getValue(value) {
-   buffer += value;
+   var currentValue;
+   currentValue = (value !== '+/-') ? String(getNumericValue(value)) : String((-1) * Number(output.value));
+   return currentValue;
+ }
 
-   var current = buffer.split('.');
-   current = current.shift() + (current.length ? '.' + current.join('') : '');
-   var split = current.split('.');
+ function getNumericValue(value) {
+   var current = '';
+     if (value !== '+/-') {
+       buffer += value;
+       current = buffer.split('.');
+       current = current.shift() + (current.length ? '.' + current.join('') : '');
+       var split = current.split('.');
 
-   if (split.length === 2) {
-     var whole = String(Number(split[0]));
-     var decimal = String(Number(split[1]));
-     current = (split[1].length === 0) ? whole : whole + '.' + decimal;
-   } else {
-     current = String(Number(split[0]));
+       if (split.length === 2) {
+         var whole = String(Number(split[0]));
+         var decimal = String(Number(split[1]));
+         current = (split[1].length === 0) ? whole : whole + '.' + decimal;
+         current = Number(current);
+       } else {
+         current = Number(split[0]);
+       }
+         return Number(current);
+     }
+ }
+
+ function doActionEqual() {
+   var currentValue = Number(output.value);
+   var result = 0;
+
+   if (!comparator.complete) {
+     if (comparator.action === 'plus') {
+       result = Number(comparator.result) + currentValue;
+     }
+
+     if (comparator.action === 'minus') {
+       result = Number(comparator.result) - currentValue;
+     }
+
+     comparator.result = Number(result);
+     comparator.complete = true;
+     comparator.numbers = [];
+     console.log(comparator);
+     output.value = result;
    }
 
-   return current;
+   return true;
  }
 
  function resetHandler(event) {
    event.preventDefault();
    clear();
+ }
+
+ function equalHandler(event) {
+   event.preventDefault();
+   doActionEqual();
  }
 
 
@@ -113,7 +164,7 @@
    var currentButton = event.target.closest('button');
 
    if (currentButton) {
-     var currentButtonValue = String(currentButton.dataset.number);
+     var currentButtonValue = String(currentButton.dataset.number).trim();
      output.value = getValue(currentButtonValue);
    }
  }
@@ -140,45 +191,52 @@
  }
 
  function setComparator(action) {
-   var currentValue = Number(buffer);
-   if(action === 'plus') comparator.push(currentValue);
-   if(action === 'minus') {
-     if (!comparator.length) {
-       comparator.push(currentValue)
-     } else comparator.push((-1) * currentValue);
-   }
-   
+   var currentValue = Number(output.value);
    buffer = 0;
+   comparator.action = action;
+
+   if (!comparator.complete) {
+     comparator.numbers.push(currentValue);
+     comparator.complete = false;
+   }
+
+   if (comparator.complete) {
+     comparator.numbers[0] = comparator.result;
+     comparator.complete = false;
+   }
  }
 
-  function makeSum() {
+  function doActionSum() {
     var result = 0;
     setComparator('plus');
-    comparator.forEach(function (value){
-      result += value;
-    });
 
-    return result;
+     comparator.numbers.forEach(function (value){
+       result += value;
+     });
+     comparator.result = result;
+     return result;
   }
 
-  function makeDiff() {
-    var result = 0;
+  function doActionDiff() {
     setComparator('minus');
-    comparator.forEach(function (value){
-      result += value;
-    });
+    var result = Number(comparator.numbers[0]);
+    for (var i = 1; i < comparator.numbers.length; i++) {
+      result -= comparator.numbers[i];
+    }
+
+    comparator.result = result;
 
     return result;
   }
 
   function minusHandler(event) {
     event.preventDefault();
-    output.value = makeDiff();
+    output.value = doActionDiff();
   }
 
  function plusHandler(event) {
    event.preventDefault();
-   output.value = makeSum();
+   output.value = doActionSum();
  }
 
  function init() {
@@ -200,16 +258,16 @@
    off.addEventListener('click', triggerOnOff);
    plus.addEventListener('click', plusHandler);
    minus.addEventListener('click', minusHandler);
+   equal.addEventListener('click', equalHandler);
    // divide.addEventListener('click', divideHandler);
    // multiply.addEventListener('click', multiplyHandler);
    // sqrt.addEventListener('click', sqrtHandler);
-   // equal.addEventListener('click', equalHandler);
 
    keyboard.forEach(function (value){
      value.addEventListener('click', clickKeyboardNumberHandler);
    });
 
-   document.addEventListener('keydown', setKeyboardOutput);
+   document.addEventListener('keydown', setKeyboardRoutes);
  }
 
   var onLoadHandler = function () {
